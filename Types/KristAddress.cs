@@ -51,20 +51,24 @@ namespace Crazed.KristSharp
             Parse(result.address);
         }
 
+        private void Parse(KAddress data)
+        {
+            Balance = data.balance;
+            TotalIn = data.totalin;
+            TotalOut = data.totalout;
+            FirstSeen = data.firstseen;
+        }
+
         public async Task<KristTransaction> MakeTransaction(string recipient, int amount, string metadata = null)
         {
             if (PrivateKey == null)
-            {
                 throw new KristPrivateKeyMissingException();
-            }
             Dictionary<string, string> table = new Dictionary<string, string>();
             table["privatekey"] = PrivateKey;
             table["to"] = recipient;
             table["amount"] = amount.ToString();
             if (metadata != null)
-            {
                 table["metadata"] = metadata;
-            }
             KTransactionResult result = await KristUtils.POST<KTransactionResult>("transactions/", table);
             return new KristTransaction(result.transaction);
         }
@@ -76,8 +80,8 @@ namespace Crazed.KristSharp
 
         public async Task<KristTransaction[]> GetRecentTransactions(int limit = 50, int offset = 0)
         {
-            KTransactionsResult result = await KristUtils.GET<KTransactionsResult>("addresses/" + Address + "/transactions?limit=" + limit.ToString() + "&offset=" + offset.ToString());
-            KristTransaction[] transactions = new KristTransaction[result.transactions.Length];
+            var result = await KristUtils.GET<KTransactionsResult>("addresses/" + Address + "/transactions?limit=" + limit.ToString() + "&offset=" + offset.ToString());
+            var transactions = new KristTransaction[result.transactions.Length];
             for (int i = 0; i < result.transactions.Length; i++)
             {
                 transactions[i] = new KristTransaction(result.transactions[i]);
@@ -85,14 +89,62 @@ namespace Crazed.KristSharp
             return transactions;
         }
 
-
-
-        private void Parse(KAddress data)
+        public async Task<KristName[]> GetAllNames(int limit = 50, int offset = 0)
         {
-            Balance = data.balance;
-            TotalIn = data.totalin;
-            TotalOut = data.totalout;
-            FirstSeen = data.firstseen;
+            var result = await KristUtils.GET<KNamesResult>("addresses/" + Address + "/names?limit=" + limit.ToString() + "&offset=" + offset.ToString());
+            var names = new KristName[result.names.Length];
+            for (int i = 0; i < names.Length; i++)
+            {
+                names[i] = new KristName(result.names[i]);
+            }
+            return names;
+        }
+
+        public async Task<KristName> RegisterName(string name)
+        {
+            if (PrivateKey == null)
+                throw new KristPrivateKeyMissingException();
+            var table = new Dictionary<string, string>();
+            table["privatekey"] = PrivateKey;
+            await KristUtils.POST<KResult>("names/" + name, table);
+            return await Krist.GetName(name);
+        }
+
+        public async Task<KristName> TransferName(string name, string address)
+        {
+            if (PrivateKey == null)
+                throw new KristPrivateKeyMissingException();
+            var table = new Dictionary<string, string>();
+            table["privatekey"] = PrivateKey;
+            table["address"] = address;
+            await KristUtils.POST<KResult>("names/" + name + "/transfer", table);
+            return await Krist.GetName(name);
+        }
+
+        public Task<KristName> TransferName(string name, KristAddress address)
+        {
+            return TransferName(name, address.Address);
+        }
+
+        public async Task<KristName> UpdateNameARecord(string name, string arecord)
+        {
+            if (PrivateKey == null)
+                throw new KristPrivateKeyMissingException();
+            var table = new Dictionary<string, string>();
+            table["privatekey"] = PrivateKey;
+            table["a"] = arecord;
+            await KristUtils.POST<KResult>("names/" + name + "/transfer", table);
+            return await Krist.GetName(name);
+        }
+
+        public async Task<bool> Authenticate()
+        {
+            if (PrivateKey == null)
+                throw new KristPrivateKeyMissingException();
+            var table = new Dictionary<string, string>();
+            table["privatekey"] = PrivateKey;
+            var result = await KristUtils.POST<KAuthenticateAddressResult>("login", table);
+            return result.authed;
         }
 
 

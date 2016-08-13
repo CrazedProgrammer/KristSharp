@@ -50,6 +50,11 @@ namespace Crazed.KristSharp
         public KBlock[] blocks;
     }
 
+    class KBlockResult : KResult
+    {
+        public KBlock block;
+    }
+
     class KBlockSubmitResult : KResult
     {
         public bool success;
@@ -106,25 +111,20 @@ namespace Crazed.KristSharp
 
     class KMOTDResult : KResult
     {
-        string motd;
-        string psa;
-        string shrodingers_cat;
-        string set;
+        public string motd;
+        public string psa;
+        public string shrodingers_cat;
+        public DateTime set;
     }
 
     class KMoneySupplyResult : KResult
     {
-        long money_supply;
+        public long money_supply;
     }
 
     class KWork24HrResult : KResult
     {
-        int[] work;
-    }
-
-    class KV2AddrFromPKeyResult : KResult
-    {
-        public string address;
+        public int[] work;
     }
 
     class KAddress
@@ -138,7 +138,7 @@ namespace Crazed.KristSharp
 
     class KTransaction
     {
-        public long id;
+        public int id;
         public string from;
         public string to;
         public int value;

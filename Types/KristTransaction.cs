@@ -8,7 +8,7 @@ namespace Crazed.KristSharp
 {
     public class KristTransaction : IEquatable<KristTransaction>
     {
-        public readonly long ID;
+        public readonly int ID;
         public readonly KristAddress From;
         public readonly KristAddress To;
         public readonly int Value;
@@ -22,7 +22,7 @@ namespace Crazed.KristSharp
             From = new KristAddress(transaction.from);
             To = new KristAddress(transaction.to);
             Value = transaction.value;
-            Time = transaction.time;//KristUtils.ParseDateTime(transaction.time);
+            Time = transaction.time;
             Name = transaction.name;
             MetaData = transaction.metadata;
         }
@@ -67,7 +67,7 @@ namespace Crazed.KristSharp
 
         public override string ToString()
         {
-            return "Krist transaction #" + ID.ToString();
+            return "Transaction #" + ID.ToString() + "  " + (String.IsNullOrWhiteSpace(From.Address) ? "mined" : From.Address) + " -> " + Value.ToString() + "KST -> " + To.Address;
         }
     }
 }

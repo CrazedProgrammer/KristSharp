@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="Exceptions.cs" />
     <Compile Include="Types\KristAddress.cs" />
+    <Compile Include="Types\KristBlock.cs" />
+    <Compile Include="Types\KristMOTD.cs" />
     <Compile Include="Types\KristName.cs" />
     <Compile Include="Types\KristTransaction.cs" />
     <Compile Include="Wrapper\KristUtils.cs" />
