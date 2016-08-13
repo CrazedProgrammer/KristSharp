@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSKrist")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("KristSharp")]
+[assembly: AssemblyDescription("An object-oriented Krist API wrapper for C#")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CrazedProgrammer")]
 [assembly: AssemblyProduct("KristSharp")]
